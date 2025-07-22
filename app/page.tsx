@@ -1,28 +1,46 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabaseClient';
+
+type Prediction = {
+  id: string;
+  claim_text: string;
+  target_date: string | null;
+  outcome_status: string;
+};
 
 export default function Home() {
-  // just to prove env vars still load
+  const [predictions, setPredictions] = useState<Prediction[]>([]);
+
   useEffect(() => {
-    console.log('URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
+    (async () => {
+      const { data, error } = await supabase
+        .from('predictions')
+        .select('id, claim_text, target_date, outcome_status')
+        .order('created_at', { ascending: false })
+        .limit(10);
+      if (!error) setPredictions(data as Prediction[]);
+      else console.error(error);
+    })();
   }, []);
 
   return (
-    <main className="p-8 space-y-8">
-      <h1 className="text-3xl font-bold text-blue-600">
-        Tailwind is working!
-      </h1>
+    <main className="p-8 space-y-6">
+      <h1 className="text-3xl font-bold text-blue-600">Latest Predictions</h1>
 
-      {/* 🔵 NEW CARD */}
-      <div className="max-w-sm rounded-2xl bg-blue-50 p-6 shadow">
-        <h2 className="mb-2 text-xl font-semibold text-blue-700">
-          Sample Expert Card
-        </h2>
-        <p className="text-sm text-blue-800">
-          This is where an expert’s bio or stats will go.
-        </p>
-      </div>
+      {predictions.map(p => (
+        <div key={p.id} className="max-w-md rounded-2xl bg-blue-50 p-6 shadow">
+          <p className="mb-2 font-semibold">{p.claim_text}</p>
+          <p className="text-sm text-gray-600">
+            Target date: {p.target_date ?? '—'} · Status: {p.outcome_status}
+          </p>
+        </div>
+      ))}
+
+      {predictions.length === 0 && (
+        <p className="text-gray-500">No predictions yet.</p>
+      )}
     </main>
   );
 }
