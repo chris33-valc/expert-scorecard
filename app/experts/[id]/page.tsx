@@ -4,13 +4,14 @@ import PredictionCard, { Prediction } from '@/components/PredictionCard';
 import AddPrediction from '@/components/AddPrediction';
 import Link from 'next/link';
 
-// tell Next.js this page is always dynamic
 export const dynamic = 'force-dynamic';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
+
+// ↓↓↓  INLINE the type right here – no alias, no import needed
 export default async function Page({
   params,
 }: {
