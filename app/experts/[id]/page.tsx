@@ -1,18 +1,25 @@
+// app/experts/[id]/page.tsx
 import { createClient } from '@supabase/supabase-js';
 import PredictionCard, { Prediction } from '@/components/PredictionCard';
-import AddPrediction from '@/components/AddPrediction';       // <= add
+import AddPrediction from '@/components/AddPrediction';
 import Link from 'next/link';
 
+// tell Next.js this page is always dynamic
 export const dynamic = 'force-dynamic';
+
+// ✅  The only type Next needs:
+type PageProps = {
+  params: { id: string }   // ← we only expect an id here
+};
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-interface Props { params: { id: string } }
-
-export default async function ExpertPage({ params }: Props) {
+// ────────────────────────────────────────────
+// Everything below can stay exactly as you had it
+export default async function ExpertPage({ params }: PageProps) {
   const { data: expert, error: eErr } = await supabase
     .from('experts')
     .select('id, display_name, handle, platform')
@@ -40,7 +47,7 @@ export default async function ExpertPage({ params }: Props) {
       <h2 className="text-2xl font-semibold mb-4">Predictions</h2>
       {predictions?.length ? (
         <ul className="space-y-4">
-          {predictions.map(p => (
+          {predictions.map((p) => (
             <PredictionCard key={p.id} p={p as Prediction} />
           ))}
         </ul>
