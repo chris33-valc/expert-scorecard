@@ -11,7 +11,7 @@ export default async function Experts() {
 
   const { data: experts, error } = await supabase
     .from('experts')
-    .select('id, name, overall_accuracy')
+    .select('id, name')
     .order('created_at', { ascending: false })
     .limit(20);
 
