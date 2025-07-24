@@ -31,7 +31,7 @@ export default async function Experts() {
             >
               <span className="font-semibold">{e.display_name}</span>
               <span className="text-sm text-gray-500 ml-2">
-                Accuracy: {e.overall_accuracy ?? '—'}
+                Accuracy: 
               </span>
             </Link>
           </li>
