@@ -7,19 +7,15 @@ import Link from 'next/link';
 // tell Next.js this page is always dynamic
 export const dynamic = 'force-dynamic';
 
-// ✅  The only type Next needs:
-type PageProps = {
-  params: { id: string }   // ← we only expect an id here
-};
-
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
-
-// ────────────────────────────────────────────
-// Everything below can stay exactly as you had it
-export default async function ExpertPage({ params }: PageProps) {
+export default async function Page({
+  params,
+}: {
+  params: { id: string };
+}) {
   const { data: expert, error: eErr } = await supabase
     .from('experts')
     .select('id, display_name, handle, platform')
